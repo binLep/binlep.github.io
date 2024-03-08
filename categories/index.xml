@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Categories on binLep&#39;s Blog</title>
+        <link>https://binlep.github.io/categories/</link>
+        <description>Recent content in Categories on binLep&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Mon, 27 Feb 2023 11:28:00 +0000</lastBuildDate><atom:link href="https://binlep.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Hardware</title>
+        <link>https://binlep.github.io/categories/hardware/</link>
+        <pubDate>Mon, 27 Feb 2023 11:28:00 +0000</pubDate>
+        
+        <guid>https://binlep.github.io/categories/hardware/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Code</title>
+        <link>https://binlep.github.io/categories/code/</link>
+        <pubDate>Tue, 15 Nov 2022 09:40:00 +0000</pubDate>
+        
+        <guid>https://binlep.github.io/categories/code/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Basic</title>
+        <link>https://binlep.github.io/categories/basic/</link>
+        <pubDate>Wed, 02 Nov 2022 00:00:00 +0000</pubDate>
+        
+        <guid>https://binlep.github.io/categories/basic/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Kernel</title>
+        <link>https://binlep.github.io/categories/kernel/</link>
+        <pubDate>Mon, 19 Sep 2022 14:55:36 +0000</pubDate>
+        
+        <guid>https://binlep.github.io/categories/kernel/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>IOT</title>
+        <link>https://binlep.github.io/categories/iot/</link>
+        <pubDate>Mon, 19 Sep 2022 13:23:00 +0000</pubDate>
+        
+        <guid>https://binlep.github.io/categories/iot/</guid>
+        <description></description>
+        </item>
+        
+    </channel>
+</rss>

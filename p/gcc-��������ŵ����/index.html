@@ -1,24 +1,48 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content=' 1 ctf: version magic &amp;#39;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#39; should be &amp;#39;2.6.39.4-armexploitlab-therealsaumil SMP mod_unload ARMv7 &amp;#39; 暴力解决 路径
-1 ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 直接修改
-1 2 3 4 5 6 7 8 9 # diff ./output/toolchain/linux-3.6.9/include/linux/vermagic.h.bak ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 28,32c28 &amp;lt; #define VERMAGIC_STRING \ &amp;lt; UTS_RELEASE &amp;#34; &amp;#34; \ &amp;lt; MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT \ &amp;lt; MODULE_VERMAGIC_MODULE_UNLOAD MODULE_VERMAGIC_MODVERSIONS \ &amp;lt; MODULE_ARCH_VERMAGIC --- &amp;gt; #define VERMAGIC_STRING &amp;#34;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#34; '>
-<title>Kernel VERMAGIC Patch</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='这是一篇 GCC 编译的疑难杂症文章
+常见问题 gcc 无法找到常用头文件 当我们利用如下命令查看 gcc 所使用的头文件目录时
+1 `gcc -print-prog-name=cc1` -v 发现目录为编译该 gcc 的人所使用的目录，而我们又没有该目录
+这种情况就需要自己去用-I来指定头文件目录了（视问题而定，不一定能解决）
+musl-gcc 问题 弱类型问题 当我们看见如下错误
+1 2 alias.c: error: ‘nvram_commit_adv’ aliased to undefined symbol ‘nvram_commit’ 233 | int nvram_commit_adv(int) __attribute__((alias(&amp;#34;nvram_commit&amp;#34;))); 可以在alias.c中加一行同名空函数来解决问题
+1 static int nvram_commit() {} gethostbyname 函数崩溃 问题来源： 用 musl-gcc 静态编译带有gethostbyname函数的程序产生了段错误
+Ps：musl 存在特殊的静态堆内存区
+在 Glibc 中，堆从一开始就动态申请和释放，而在 musl 中，程序开始的时候会把程序和 libc 空闲的区域当做堆内存（静态内存），优先从这里面划分空间，这部分空间用完之后再通过 mmap 进行分配
+问题原因： 静态链接下使用到了这种静态堆内存区，返回的是 64 位的地址，然后下一句汇编cdqe会按照 eax 的最高位，拓展出 rax 高 32 位的所有位，使其变为一个无效地址
+汇编演示如下：'>
+<title>GCC 编译从入门到入坟</title>
 
-<link rel='canonical' href='https://binlep.github.io/p/kernel-vermagic-patch/'>
+<link rel='canonical' href='https://binlep.github.io/p/gcc-%E7%BC%96%E8%AF%91%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E5%9D%9F/'>
 
-<link rel="stylesheet" href="/scss/style.min.6c70e90501462040624778a1ba5d0d67c81a862d1781b87e869d7092ad0e2b77.css"><meta property='og:title' content='Kernel VERMAGIC Patch'>
-<meta property='og:description' content=' 1 ctf: version magic &amp;#39;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#39; should be &amp;#39;2.6.39.4-armexploitlab-therealsaumil SMP mod_unload ARMv7 &amp;#39; 暴力解决 路径
-1 ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 直接修改
-1 2 3 4 5 6 7 8 9 # diff ./output/toolchain/linux-3.6.9/include/linux/vermagic.h.bak ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 28,32c28 &amp;lt; #define VERMAGIC_STRING \ &amp;lt; UTS_RELEASE &amp;#34; &amp;#34; \ &amp;lt; MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT \ &amp;lt; MODULE_VERMAGIC_MODULE_UNLOAD MODULE_VERMAGIC_MODVERSIONS \ &amp;lt; MODULE_ARCH_VERMAGIC --- &amp;gt; #define VERMAGIC_STRING &amp;#34;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#34; '>
-<meta property='og:url' content='https://binlep.github.io/p/kernel-vermagic-patch/'>
+<link rel="stylesheet" href="/scss/style.min.6c70e90501462040624778a1ba5d0d67c81a862d1781b87e869d7092ad0e2b77.css"><meta property='og:title' content='GCC 编译从入门到入坟'>
+<meta property='og:description' content='这是一篇 GCC 编译的疑难杂症文章
+常见问题 gcc 无法找到常用头文件 当我们利用如下命令查看 gcc 所使用的头文件目录时
+1 `gcc -print-prog-name=cc1` -v 发现目录为编译该 gcc 的人所使用的目录，而我们又没有该目录
+这种情况就需要自己去用-I来指定头文件目录了（视问题而定，不一定能解决）
+musl-gcc 问题 弱类型问题 当我们看见如下错误
+1 2 alias.c: error: ‘nvram_commit_adv’ aliased to undefined symbol ‘nvram_commit’ 233 | int nvram_commit_adv(int) __attribute__((alias(&amp;#34;nvram_commit&amp;#34;))); 可以在alias.c中加一行同名空函数来解决问题
+1 static int nvram_commit() {} gethostbyname 函数崩溃 问题来源： 用 musl-gcc 静态编译带有gethostbyname函数的程序产生了段错误
+Ps：musl 存在特殊的静态堆内存区
+在 Glibc 中，堆从一开始就动态申请和释放，而在 musl 中，程序开始的时候会把程序和 libc 空闲的区域当做堆内存（静态内存），优先从这里面划分空间，这部分空间用完之后再通过 mmap 进行分配
+问题原因： 静态链接下使用到了这种静态堆内存区，返回的是 64 位的地址，然后下一句汇编cdqe会按照 eax 的最高位，拓展出 rax 高 32 位的所有位，使其变为一个无效地址
+汇编演示如下：'>
+<meta property='og:url' content='https://binlep.github.io/p/gcc-%E7%BC%96%E8%AF%91%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E5%9D%9F/'>
 <meta property='og:site_name' content='binLep&#39;s Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Blog' /><meta property='article:tag' content='Kernel' /><meta property='article:published_time' content='2022-09-19T14:55:36&#43;00:00'/><meta property='article:modified_time' content='2022-09-19T14:55:36&#43;00:00'/>
-<meta name="twitter:title" content="Kernel VERMAGIC Patch">
-<meta name="twitter:description" content=" 1 ctf: version magic &amp;#39;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#39; should be &amp;#39;2.6.39.4-armexploitlab-therealsaumil SMP mod_unload ARMv7 &amp;#39; 暴力解决 路径
-1 ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 直接修改
-1 2 3 4 5 6 7 8 9 # diff ./output/toolchain/linux-3.6.9/include/linux/vermagic.h.bak ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 28,32c28 &amp;lt; #define VERMAGIC_STRING \ &amp;lt; UTS_RELEASE &amp;#34; &amp;#34; \ &amp;lt; MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT \ &amp;lt; MODULE_VERMAGIC_MODULE_UNLOAD MODULE_VERMAGIC_MODVERSIONS \ &amp;lt; MODULE_ARCH_VERMAGIC --- &amp;gt; #define VERMAGIC_STRING &amp;#34;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#34; ">
+<meta property='og:type' content='article'><meta property='article:section' content='Blog' /><meta property='article:published_time' content='2022-09-15T21:39:10&#43;00:00'/><meta property='article:modified_time' content='2022-09-15T21:39:10&#43;00:00'/>
+<meta name="twitter:title" content="GCC 编译从入门到入坟">
+<meta name="twitter:description" content="这是一篇 GCC 编译的疑难杂症文章
+常见问题 gcc 无法找到常用头文件 当我们利用如下命令查看 gcc 所使用的头文件目录时
+1 `gcc -print-prog-name=cc1` -v 发现目录为编译该 gcc 的人所使用的目录，而我们又没有该目录
+这种情况就需要自己去用-I来指定头文件目录了（视问题而定，不一定能解决）
+musl-gcc 问题 弱类型问题 当我们看见如下错误
+1 2 alias.c: error: ‘nvram_commit_adv’ aliased to undefined symbol ‘nvram_commit’ 233 | int nvram_commit_adv(int) __attribute__((alias(&amp;#34;nvram_commit&amp;#34;))); 可以在alias.c中加一行同名空函数来解决问题
+1 static int nvram_commit() {} gethostbyname 函数崩溃 问题来源： 用 musl-gcc 静态编译带有gethostbyname函数的程序产生了段错误
+Ps：musl 存在特殊的静态堆内存区
+在 Glibc 中，堆从一开始就动态申请和释放，而在 musl 中，程序开始的时候会把程序和 libc 空闲的区域当做堆内存（静态内存），优先从这里面划分空间，这部分空间用完之后再通过 mmap 进行分配
+问题原因： 静态链接下使用到了这种静态堆内存区，返回的是 64 位的地址，然后下一句汇编cdqe会按照 eax 的最高位，拓展出 rax 高 32 位的所有位，使其变为一个无效地址
+汇编演示如下：">
     <link rel="shortcut icon" href="/img/favicon.ico" />
 
     </head>
@@ -253,7 +277,12 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#暴力解决">暴力解决</a></li>
+    <li><a href="#gcc-无法找到常用头文件">gcc 无法找到常用头文件</a></li>
+  </ol>
+
+  <ol>
+    <li><a href="#弱类型问题">弱类型问题</a></li>
+    <li><a href="#gethostbyname-函数崩溃">gethostbyname 函数崩溃</a></li>
   </ol>
 </nav>
         </div>
@@ -272,8 +301,8 @@
     
     <header class="article-category">
         
-            <a href="/categories/kernel/" >
-                Kernel
+            <a href="/categories/code/" >
+                Code
             </a>
         
     </header>
@@ -281,7 +310,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/kernel-vermagic-patch/">Kernel VERMAGIC Patch</a>
+            <a href="/p/gcc-%E7%BC%96%E8%AF%91%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E5%9D%9F/">GCC 编译从入门到入坟</a>
         </h2>
     
         
@@ -303,7 +332,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">2022-09-19</time>
+                <time class="article-time--published">2022-09-15</time>
             </div>
         
 
@@ -333,61 +362,62 @@
     <section class="article-content">
     
     
-    <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+    <p>这是一篇 GCC 编译的疑难杂症文章</p>
+<h1 id="常见问题">常见问题</h1>
+<h2 id="gcc-无法找到常用头文件">gcc 无法找到常用头文件</h2>
+<p>当我们利用如下命令查看 gcc 所使用的头文件目录时</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-0-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-1">1</a>
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ctf: version magic <span style="color:#f1fa8c">&#39;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &#39;</span> should be <span style="color:#f1fa8c">&#39;2.6.39.4-armexploitlab-therealsaumil SMP mod_unload ARMv7 &#39;</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f1fa8c">`</span>gcc -print-prog-name<span style="color:#ff79c6">=</span>cc1<span style="color:#f1fa8c">`</span> -v
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="暴力解决">暴力解决</h2>
-<p>路径</p>
+</div><p>发现目录为编译该 gcc 的人所使用的目录，而我们又没有该目录</p>
+<p>这种情况就需要自己去用<code>-I</code>来指定头文件目录了（视问题而定，不一定能解决）</p>
+<h1 id="musl-gcc-问题">musl-gcc 问题</h1>
+<h2 id="弱类型问题">弱类型问题</h2>
+<p>当我们看见如下错误</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-1-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-1-1">1</a>
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-1-2"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-1-2">2</a>
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./output/toolchain/linux-3.6.9/include/linux/vermagic.h
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>alias.c: error: ‘nvram_commit_adv’ aliased to undefined symbol ‘nvram_commit’
+</span></span><span style="display:flex;"><span>  <span style="color:#bd93f9">233</span> | int nvram_commit_adv<span style="color:#ff79c6">(</span>int<span style="color:#ff79c6">)</span> __attribute__<span style="color:#ff79c6">((</span>alias<span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;nvram_commit&#34;</span><span style="color:#ff79c6">)))</span>;
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>直接修改</p>
+</div><p>可以在<code>alias.c</code>中加一行同名空函数来解决问题</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-1">1</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-2"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-2">2</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-3"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-3">3</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-4"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-4">4</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-5"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-5">5</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-6"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-6">6</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-7"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-7">7</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-8"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-8">8</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-9"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-9">9</a>
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#6272a4"># diff ./output/toolchain/linux-3.6.9/include/linux/vermagic.h.bak ./output/toolchain/linux-3.6.9/include/linux/vermagic.h</span>
-</span></span><span style="display:flex;"><span>28,32c28
-</span></span><span style="display:flex;"><span>&lt; <span style="color:#6272a4">#define VERMAGIC_STRING                         \</span>
-</span></span><span style="display:flex;"><span>&lt;     UTS_RELEASE <span style="color:#f1fa8c">&#34; &#34;</span>                            <span style="color:#f1fa8c">\
-</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>&lt;     MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT             <span style="color:#f1fa8c">\
-</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>&lt;     MODULE_VERMAGIC_MODULE_UNLOAD MODULE_VERMAGIC_MODVERSIONS    <span style="color:#f1fa8c">\
-</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>&lt;     MODULE_ARCH_VERMAGIC
-</span></span><span style="display:flex;"><span>---
-</span></span><span style="display:flex;"><span>&gt; <span style="color:#6272a4">#define VERMAGIC_STRING &#34;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &#34;</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#ff79c6">static</span> <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">nvram_commit</span>() {}
 </span></span></code></pre></td></tr></table>
 </div>
-</div>
+</div><h2 id="gethostbyname-函数崩溃">gethostbyname 函数崩溃</h2>
+<p><strong>问题来源：</strong> 用 musl-gcc 静态编译带有<code>gethostbyname</code>函数的程序产生了段错误</p>
+<p><strong>Ps：musl 存在特殊的静态堆内存区</strong></p>
+<p>在 Glibc 中，堆从一开始就动态申请和释放，而在 musl 中，程序开始的时候会把程序和 libc 空闲的区域当做堆内存（静态内存），优先从这里面划分空间，这部分空间用完之后再通过 mmap 进行分配</p>
+<p><strong>问题原因：</strong> 静态链接下使用到了这种静态堆内存区，返回的是 64 位的地址，然后下一句汇编<code>cdqe</code>会按照 eax 的最高位，拓展出 rax 高 32 位的所有位，使其变为一个无效地址</p>
+<p><strong>汇编演示如下：</strong></p>
+<pre tabindex="0"><code class="language-less" data-lang="less">*RAX  0x7ffff7ff8050 —▸ 0x7ffff7ff809c ◂— &#39;127.0.0.1&#39;
+   0x4091f3 &lt;main+86&gt;     call   gethostbyname@plt                      &lt;gethostbyname@plt&gt; 
+ ► 0x4091f8 &lt;main+91&gt;     cdqe
+</code></pre><p>之后地址会变为</p>
+<pre tabindex="0"><code class="language-less" data-lang="less">*RAX  0xfffffffff7ff8050
+</code></pre><p>导致最终我们得到了一个错误的<code>struct hostent *</code>类型的地址</p>
+<p><strong>解决方法：</strong></p>
+<p>发现编译的时候加了参数<code>-std=c99</code>，删掉这个参数就好了</p>
+
 </section>
 
 
     <footer class="article-footer">
     
-    <section class="article-tags">
-        
-            <a href="/tags/kernel/">Kernel</a>
-        
-    </section>
-
 
     </footer>
 
@@ -415,7 +445,7 @@
         render: (h) =>
             h("Vssue", {
                 props: {
-                    title: "Kernel VERMAGIC Patch",
+                    title: "GCC 编译从入门到入坟",
                     options: {
                         autoCreateIssue:  true ,
                         owner: "binLep",

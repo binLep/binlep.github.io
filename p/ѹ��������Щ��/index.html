@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content=' 1 ctf: version magic &amp;#39;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#39; should be &amp;#39;2.6.39.4-armexploitlab-therealsaumil SMP mod_unload ARMv7 &amp;#39; 暴力解决 路径
-1 ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 直接修改
-1 2 3 4 5 6 7 8 9 # diff ./output/toolchain/linux-3.6.9/include/linux/vermagic.h.bak ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 28,32c28 &amp;lt; #define VERMAGIC_STRING \ &amp;lt; UTS_RELEASE &amp;#34; &amp;#34; \ &amp;lt; MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT \ &amp;lt; MODULE_VERMAGIC_MODULE_UNLOAD MODULE_VERMAGIC_MODVERSIONS \ &amp;lt; MODULE_ARCH_VERMAGIC --- &amp;gt; #define VERMAGIC_STRING &amp;#34;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#34; '>
-<title>Kernel VERMAGIC Patch</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='前言 这里列举的是不同的压缩包以及相同的压缩包在不同版本下的解压方式
+tar 默认压缩命令 tar -cvf demo.tar ./demo 默认解压命令 1 tar -xvf demo.tar 特定版本加解压命令 版本列表如下
+1 2 3 4 5 6 gnu GNU tar 1.13.x 格式 oldgnu GNU 格式 as per tar &amp;lt;= 1.12 pax POSIX 1003.1-2001 (pax) 格式 posix 等同于 pax ustar POSIX 1003.1-1988 (ustar) 格式 v7 old V7 tar 格式 用法
+1 tar -xvf demo.tar -H posix tar.bz2 默认压缩命令 1 tar -jcvf demo.tar.bz2 ./demo 默认解压命令 1 tar -jxvf demo.'>
+<title>压缩包的那些事</title>
 
-<link rel='canonical' href='https://binlep.github.io/p/kernel-vermagic-patch/'>
+<link rel='canonical' href='https://binlep.github.io/p/%E5%8E%8B%E7%BC%A9%E5%8C%85%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/'>
 
-<link rel="stylesheet" href="/scss/style.min.6c70e90501462040624778a1ba5d0d67c81a862d1781b87e869d7092ad0e2b77.css"><meta property='og:title' content='Kernel VERMAGIC Patch'>
-<meta property='og:description' content=' 1 ctf: version magic &amp;#39;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#39; should be &amp;#39;2.6.39.4-armexploitlab-therealsaumil SMP mod_unload ARMv7 &amp;#39; 暴力解决 路径
-1 ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 直接修改
-1 2 3 4 5 6 7 8 9 # diff ./output/toolchain/linux-3.6.9/include/linux/vermagic.h.bak ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 28,32c28 &amp;lt; #define VERMAGIC_STRING \ &amp;lt; UTS_RELEASE &amp;#34; &amp;#34; \ &amp;lt; MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT \ &amp;lt; MODULE_VERMAGIC_MODULE_UNLOAD MODULE_VERMAGIC_MODVERSIONS \ &amp;lt; MODULE_ARCH_VERMAGIC --- &amp;gt; #define VERMAGIC_STRING &amp;#34;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#34; '>
-<meta property='og:url' content='https://binlep.github.io/p/kernel-vermagic-patch/'>
+<link rel="stylesheet" href="/scss/style.min.6c70e90501462040624778a1ba5d0d67c81a862d1781b87e869d7092ad0e2b77.css"><meta property='og:title' content='压缩包的那些事'>
+<meta property='og:description' content='前言 这里列举的是不同的压缩包以及相同的压缩包在不同版本下的解压方式
+tar 默认压缩命令 tar -cvf demo.tar ./demo 默认解压命令 1 tar -xvf demo.tar 特定版本加解压命令 版本列表如下
+1 2 3 4 5 6 gnu GNU tar 1.13.x 格式 oldgnu GNU 格式 as per tar &amp;lt;= 1.12 pax POSIX 1003.1-2001 (pax) 格式 posix 等同于 pax ustar POSIX 1003.1-1988 (ustar) 格式 v7 old V7 tar 格式 用法
+1 tar -xvf demo.tar -H posix tar.bz2 默认压缩命令 1 tar -jcvf demo.tar.bz2 ./demo 默认解压命令 1 tar -jxvf demo.'>
+<meta property='og:url' content='https://binlep.github.io/p/%E5%8E%8B%E7%BC%A9%E5%8C%85%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/'>
 <meta property='og:site_name' content='binLep&#39;s Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Blog' /><meta property='article:tag' content='Kernel' /><meta property='article:published_time' content='2022-09-19T14:55:36&#43;00:00'/><meta property='article:modified_time' content='2022-09-19T14:55:36&#43;00:00'/>
-<meta name="twitter:title" content="Kernel VERMAGIC Patch">
-<meta name="twitter:description" content=" 1 ctf: version magic &amp;#39;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#39; should be &amp;#39;2.6.39.4-armexploitlab-therealsaumil SMP mod_unload ARMv7 &amp;#39; 暴力解决 路径
-1 ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 直接修改
-1 2 3 4 5 6 7 8 9 # diff ./output/toolchain/linux-3.6.9/include/linux/vermagic.h.bak ./output/toolchain/linux-3.6.9/include/linux/vermagic.h 28,32c28 &amp;lt; #define VERMAGIC_STRING \ &amp;lt; UTS_RELEASE &amp;#34; &amp;#34; \ &amp;lt; MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT \ &amp;lt; MODULE_VERMAGIC_MODULE_UNLOAD MODULE_VERMAGIC_MODVERSIONS \ &amp;lt; MODULE_ARCH_VERMAGIC --- &amp;gt; #define VERMAGIC_STRING &amp;#34;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &amp;#34; ">
+<meta property='og:type' content='article'><meta property='article:section' content='Blog' /><meta property='article:published_time' content='2022-10-25T15:44:00&#43;00:00'/><meta property='article:modified_time' content='2022-10-25T15:44:00&#43;00:00'/>
+<meta name="twitter:title" content="压缩包的那些事">
+<meta name="twitter:description" content="前言 这里列举的是不同的压缩包以及相同的压缩包在不同版本下的解压方式
+tar 默认压缩命令 tar -cvf demo.tar ./demo 默认解压命令 1 tar -xvf demo.tar 特定版本加解压命令 版本列表如下
+1 2 3 4 5 6 gnu GNU tar 1.13.x 格式 oldgnu GNU 格式 as per tar &amp;lt;= 1.12 pax POSIX 1003.1-2001 (pax) 格式 posix 等同于 pax ustar POSIX 1003.1-1988 (ustar) 格式 v7 old V7 tar 格式 用法
+1 tar -xvf demo.tar -H posix tar.bz2 默认压缩命令 1 tar -jcvf demo.tar.bz2 ./demo 默认解压命令 1 tar -jxvf demo.">
     <link rel="shortcut icon" href="/img/favicon.ico" />
 
     </head>
@@ -253,7 +256,26 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#暴力解决">暴力解决</a></li>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#tar">tar</a>
+      <ol>
+        <li><a href="#默认压缩命令">默认压缩命令</a></li>
+        <li><a href="#默认解压命令">默认解压命令</a></li>
+        <li><a href="#特定版本加解压命令">特定版本加解压命令</a></li>
+      </ol>
+    </li>
+    <li><a href="#tarbz2">tar.bz2</a>
+      <ol>
+        <li><a href="#默认压缩命令-1">默认压缩命令</a></li>
+        <li><a href="#默认解压命令-1">默认解压命令</a></li>
+      </ol>
+    </li>
+    <li><a href="#targz">tar.gz</a>
+      <ol>
+        <li><a href="#默认压缩命令-2">默认压缩命令</a></li>
+        <li><a href="#默认解压命令-2">默认解压命令</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -272,8 +294,8 @@
     
     <header class="article-category">
         
-            <a href="/categories/kernel/" >
-                Kernel
+            <a href="/categories/basic/" >
+                Basic
             </a>
         
     </header>
@@ -281,7 +303,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/kernel-vermagic-patch/">Kernel VERMAGIC Patch</a>
+            <a href="/p/%E5%8E%8B%E7%BC%A9%E5%8C%85%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/">压缩包的那些事</a>
         </h2>
     
         
@@ -303,7 +325,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">2022-09-19</time>
+                <time class="article-time--published">2022-10-25</time>
             </div>
         
 
@@ -333,25 +355,22 @@
     <section class="article-content">
     
     
-    <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-0-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-1">1</a>
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ctf: version magic <span style="color:#f1fa8c">&#39;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &#39;</span> should be <span style="color:#f1fa8c">&#39;2.6.39.4-armexploitlab-therealsaumil SMP mod_unload ARMv7 &#39;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="暴力解决">暴力解决</h2>
-<p>路径</p>
+    <h2 id="前言">前言</h2>
+<p>这里列举的是不同的压缩包以及相同的压缩包在不同版本下的解压方式</p>
+<h2 id="tar">tar</h2>
+<h3 id="默认压缩命令">默认压缩命令</h3>
+<pre tabindex="0"><code>tar -cvf demo.tar ./demo
+</code></pre><h3 id="默认解压命令">默认解压命令</h3>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-1-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-1-1">1</a>
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./output/toolchain/linux-3.6.9/include/linux/vermagic.h
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>tar -xvf demo.tar
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>直接修改</p>
+</div><h3 id="特定版本加解压命令">特定版本加解压命令</h3>
+<p>版本列表如下</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-1">1</a>
@@ -360,20 +379,61 @@
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-4"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-4">4</a>
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-5"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-5">5</a>
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-6"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-6">6</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-7"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-7">7</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-8"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-8">8</a>
-</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-2-9"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-9">9</a>
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#6272a4"># diff ./output/toolchain/linux-3.6.9/include/linux/vermagic.h.bak ./output/toolchain/linux-3.6.9/include/linux/vermagic.h</span>
-</span></span><span style="display:flex;"><span>28,32c28
-</span></span><span style="display:flex;"><span>&lt; <span style="color:#6272a4">#define VERMAGIC_STRING                         \</span>
-</span></span><span style="display:flex;"><span>&lt;     UTS_RELEASE <span style="color:#f1fa8c">&#34; &#34;</span>                            <span style="color:#f1fa8c">\
-</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>&lt;     MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT             <span style="color:#f1fa8c">\
-</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>&lt;     MODULE_VERMAGIC_MODULE_UNLOAD MODULE_VERMAGIC_MODVERSIONS    <span style="color:#f1fa8c">\
-</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>&lt;     MODULE_ARCH_VERMAGIC
-</span></span><span style="display:flex;"><span>---
-</span></span><span style="display:flex;"><span>&gt; <span style="color:#6272a4">#define VERMAGIC_STRING &#34;2.6.36.4brcmarm SMP preempt mod_unload modversions ARMv7 &#34;</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>gnu                      GNU tar 1.13.x 格式
+</span></span><span style="display:flex;"><span>oldgnu                   GNU 格式 as per tar &lt;<span style="color:#ff79c6">=</span> 1.12
+</span></span><span style="display:flex;"><span>pax                      POSIX 1003.1-2001 <span style="color:#ff79c6">(</span>pax<span style="color:#ff79c6">)</span> 格式
+</span></span><span style="display:flex;"><span>posix                    等同于 pax
+</span></span><span style="display:flex;"><span>ustar                    POSIX 1003.1-1988 <span style="color:#ff79c6">(</span>ustar<span style="color:#ff79c6">)</span> 格式
+</span></span><span style="display:flex;"><span>v7                       old V7 tar 格式
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>用法</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-3-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-1">1</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>tar -xvf demo.tar -H posix
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="tarbz2">tar.bz2</h2>
+<h3 id="默认压缩命令-1">默认压缩命令</h3>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-4-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-4-1">1</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>tar -jcvf demo.tar.bz2 ./demo
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="默认解压命令-1">默认解压命令</h3>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-5-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-1">1</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>tar -jxvf demo.tar.bz2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="targz">tar.gz</h2>
+<h3 id="默认压缩命令-2">默认压缩命令</h3>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-6-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-1">1</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>tar -zcvf demo.tar.gz ./demo
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="默认解压命令-2">默认解压命令</h3>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f" id="hl-7-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-1">1</a>
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>tar -zxvf demo.tar.gz
 </span></span></code></pre></td></tr></table>
 </div>
 </div>
@@ -382,12 +442,6 @@
 
     <footer class="article-footer">
     
-    <section class="article-tags">
-        
-            <a href="/tags/kernel/">Kernel</a>
-        
-    </section>
-
 
     </footer>
 
@@ -415,7 +469,7 @@
         render: (h) =>
             h("Vssue", {
                 props: {
-                    title: "Kernel VERMAGIC Patch",
+                    title: "压缩包的那些事",
                     options: {
                         autoCreateIssue:  true ,
                         owner: "binLep",

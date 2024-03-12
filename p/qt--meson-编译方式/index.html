@@ -7,7 +7,7 @@
 
 <link rel='canonical' href='https://binlep.github.io/p/qt--meson-%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F/'>
 
-<link rel="stylesheet" href="/scss/style.min.6c70e90501462040624778a1ba5d0d67c81a862d1781b87e869d7092ad0e2b77.css"><meta property='og:title' content='QT &#43; meson 编译方式'>
+<link rel="stylesheet" href="/scss/style.min.39bfc3467b36f185bf2a6a0c66cdb5ce84ca6e516254de4ea769e2350a11a136.css"><meta property='og:title' content='QT &#43; meson 编译方式'>
 <meta property='og:description' content='预备工作 cross.ini 样例 以下用的mingw64编辑器版本为x86_64-12.2.0-release-posix-seh-rt_v10-rev0
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 [constants] cross_root = &amp;#39;E:/cross-tools/mingw64/bin/&amp;#39; qt_root = &amp;#39;E:/Qt/5.15.6/qtbase/&amp;#39; target = &amp;#39;&amp;#39; [binaries] c = cross_root &#43; target &#43; &amp;#39;gcc&amp;#39; cpp = cross_root &#43; target &#43; &amp;#39;g&#43;&#43;&amp;#39; ar = cross_root &#43; target &#43; &amp;#39;ar&amp;#39; strip = &amp;#39;strip&amp;#39; qmake = qt_root &#43; &amp;#39;/bin/qmake&amp;#39; [host_machine] system = &amp;#39;windows&amp;#39; cpu_family = &amp;#39;x86&amp;#39; cpu = &amp;#39;i386&amp;#39; endian = &amp;#39;little&amp;#39; [properties] qt_root = qt_root meson.'>
 <meta property='og:url' content='https://binlep.github.io/p/qt--meson-%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F/'>
@@ -199,13 +199,12 @@
             </a>
         </li>
         
-    </ol>
-    <div class="menu-bottom-section">
-        <ol class="menu">
+        <li class="menu-bottom-section">
+            <ol class="menu">
 
-            
-                <li id="dark-mode-toggle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="8" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -213,7 +212,7 @@
 
 
 
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="16" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -221,11 +220,12 @@
 
 
 
-                    <span>Dark Mode</span>
-                </li>
-            
-        </ol>
-    </div>
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
 </aside>
 
     <aside class="sidebar right-sidebar sticky">
@@ -729,7 +729,7 @@
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.23.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.24.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
@@ -830,6 +830,7 @@
         document.head.appendChild(customFont);
     }());
 </script>
+
 
     </body>
 </html>

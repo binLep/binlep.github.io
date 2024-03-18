@@ -1,36 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='宏定义相关 可以由传进来的变量生成任意变量类型的变量
-1 #define typeof(expr) __res = (expr); 函数相关 getopt 问题情景：打算调用两次 getopt 函数，兼容 DEBUG 测试
-思路：第二次运行之前，将 optind 的值重新赋值为 1
-在 x86 架构下运行正常，但是在 arm 下没有通过输入数据的判断函数
-经 GDB 调试发现，在 arm 下运行完 getopt 函数后，其第二个参数内的指针地址会乱序
-解决方案：不要用 argv 当 getopt 的参数，建立一个指针缓存变量，不断拷贝原本 argv 内的地址即可
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 #include &amp;lt;alloca.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; int main(int argc, char *argv[], char *envp[]) { int ret, i; extern char *optarg; extern int optind; char **targv = alloca(sizeof(char *) * argc); for (i = 0; i &amp;lt; argc; &#43;&#43;i) { targv[i] = argv[i]; } while ((ret = getopt(argc, targv, &amp;#34;:v:&amp;#34;)) !'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="宏定义相关 可以由传进来的变量生成任意变量类型的变量 1 #define typeof(expr) __res = (expr); 函数相关 getopt 问题情景：打算调用两次 getopt 函数，兼容 DEBUG 测试 思路：第二次运行之前，将 optind 的值重新赋值为 1 在 x86 架构下运行正常，但是在 arm 下没有通过输入数据的判断函数 经 GDB 调试发现，在 arm 下运行完 getopt 函数后，其第二个参数内的指针地址会乱序 解决方案：不要用 argv 当 getopt 的参数，建立一个指针缓存变量，不断拷贝原本 argv 内的地址即可 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 #include &lt;alloca.h&gt; #include &lt;unistd.h&gt; int main(int argc, char *argv[], char *envp[]) { int ret, i; extern char *optarg; extern int optind; char **targv = alloca(sizeof(char *) * argc); for (i = 0; i &lt; argc; ++i) { targv[i] = argv[i]; } while ((ret = getopt(argc, targv, &#34;:v:&#34;)) !">
 <title>C 语言开发笔记</title>
 
 <link rel='canonical' href='https://binlep.github.io/p/c-%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/'>
 
-<link rel="stylesheet" href="/scss/style.min.39bfc3467b36f185bf2a6a0c66cdb5ce84ca6e516254de4ea769e2350a11a136.css"><meta property='og:title' content='C 语言开发笔记'>
-<meta property='og:description' content='宏定义相关 可以由传进来的变量生成任意变量类型的变量
-1 #define typeof(expr) __res = (expr); 函数相关 getopt 问题情景：打算调用两次 getopt 函数，兼容 DEBUG 测试
-思路：第二次运行之前，将 optind 的值重新赋值为 1
-在 x86 架构下运行正常，但是在 arm 下没有通过输入数据的判断函数
-经 GDB 调试发现，在 arm 下运行完 getopt 函数后，其第二个参数内的指针地址会乱序
-解决方案：不要用 argv 当 getopt 的参数，建立一个指针缓存变量，不断拷贝原本 argv 内的地址即可
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 #include &amp;lt;alloca.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; int main(int argc, char *argv[], char *envp[]) { int ret, i; extern char *optarg; extern int optind; char **targv = alloca(sizeof(char *) * argc); for (i = 0; i &amp;lt; argc; &#43;&#43;i) { targv[i] = argv[i]; } while ((ret = getopt(argc, targv, &amp;#34;:v:&amp;#34;)) !'>
+<link rel="stylesheet" href="/scss/style.min.39bfc3467b36f185bf2a6a0c66cdb5ce84ca6e516254de4ea769e2350a11a136.css"><meta property='og:title' content="C 语言开发笔记">
+<meta property='og:description' content="宏定义相关 可以由传进来的变量生成任意变量类型的变量 1 #define typeof(expr) __res = (expr); 函数相关 getopt 问题情景：打算调用两次 getopt 函数，兼容 DEBUG 测试 思路：第二次运行之前，将 optind 的值重新赋值为 1 在 x86 架构下运行正常，但是在 arm 下没有通过输入数据的判断函数 经 GDB 调试发现，在 arm 下运行完 getopt 函数后，其第二个参数内的指针地址会乱序 解决方案：不要用 argv 当 getopt 的参数，建立一个指针缓存变量，不断拷贝原本 argv 内的地址即可 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 #include &lt;alloca.h&gt; #include &lt;unistd.h&gt; int main(int argc, char *argv[], char *envp[]) { int ret, i; extern char *optarg; extern int optind; char **targv = alloca(sizeof(char *) * argc); for (i = 0; i &lt; argc; ++i) { targv[i] = argv[i]; } while ((ret = getopt(argc, targv, &#34;:v:&#34;)) !">
 <meta property='og:url' content='https://binlep.github.io/p/c-%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/'>
 <meta property='og:site_name' content='binLep&#39;s Blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Blog' /><meta property='article:published_time' content='2022-11-15T09:40:00&#43;00:00'/><meta property='article:modified_time' content='2022-11-15T09:40:00&#43;00:00'/>
 <meta name="twitter:title" content="C 语言开发笔记">
-<meta name="twitter:description" content="宏定义相关 可以由传进来的变量生成任意变量类型的变量
-1 #define typeof(expr) __res = (expr); 函数相关 getopt 问题情景：打算调用两次 getopt 函数，兼容 DEBUG 测试
-思路：第二次运行之前，将 optind 的值重新赋值为 1
-在 x86 架构下运行正常，但是在 arm 下没有通过输入数据的判断函数
-经 GDB 调试发现，在 arm 下运行完 getopt 函数后，其第二个参数内的指针地址会乱序
-解决方案：不要用 argv 当 getopt 的参数，建立一个指针缓存变量，不断拷贝原本 argv 内的地址即可
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 #include &amp;lt;alloca.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; int main(int argc, char *argv[], char *envp[]) { int ret, i; extern char *optarg; extern int optind; char **targv = alloca(sizeof(char *) * argc); for (i = 0; i &amp;lt; argc; &#43;&#43;i) { targv[i] = argv[i]; } while ((ret = getopt(argc, targv, &amp;#34;:v:&amp;#34;)) !">
+<meta name="twitter:description" content="宏定义相关 可以由传进来的变量生成任意变量类型的变量 1 #define typeof(expr) __res = (expr); 函数相关 getopt 问题情景：打算调用两次 getopt 函数，兼容 DEBUG 测试 思路：第二次运行之前，将 optind 的值重新赋值为 1 在 x86 架构下运行正常，但是在 arm 下没有通过输入数据的判断函数 经 GDB 调试发现，在 arm 下运行完 getopt 函数后，其第二个参数内的指针地址会乱序 解决方案：不要用 argv 当 getopt 的参数，建立一个指针缓存变量，不断拷贝原本 argv 内的地址即可 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 #include &lt;alloca.h&gt; #include &lt;unistd.h&gt; int main(int argc, char *argv[], char *envp[]) { int ret, i; extern char *optarg; extern int optind; char **targv = alloca(sizeof(char *) * argc); for (i = 0; i &lt; argc; ++i) { targv[i] = argv[i]; } while ((ret = getopt(argc, targv, &#34;:v:&#34;)) !">
     <link rel="shortcut icon" href="/img/favicon.ico" />
 
     </head>
@@ -484,7 +466,7 @@
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.24.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.24.2">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
@@ -585,7 +567,6 @@
         document.head.appendChild(customFont);
     }());
 </script>
-
 
     </body>
 </html>

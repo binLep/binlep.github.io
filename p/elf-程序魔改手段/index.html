@@ -1,33 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='修改 .dynsym 上的符号 正常修改符号表拿 objcopy 就能解决，这里记录一下修改.dynsym段的符号方式
-有个已经写好的项目
-ELFkickers/redefine at master · k1988/ELFkickers · GitHub 这项目里的 redefine 是作者新加的文件夹，程序使用起来也很简单
-1 ./redefine -r -i -n nvram_get_int -p nouse_get_int libnvram-armx.so 之后就能看到.dynsym中的符号已经修改完毕
-1 2 # arm-linux-gnueabi-objdump -T libnvram-armx.so | grep get_int 000032a4 g DF .text 0000005c nouse_get_int 参考链接 修改so导出函数名称 | k1988
-https://blog.csdn.net/gxd_506/article/details/38843567'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="修改 .dynsym 上的符号 正常修改符号表拿 objcopy 就能解决，这里记录一下修改.dynsym段的符号方式 有个已经写好的项目 ELFkickers/redefine at master · k1988/ELFkickers · GitHub 这项目里的 redefine 是作者新加的文件夹，程序使用起来也很简单 1 ./redefine -r -i -n nvram_get_int -p nouse_get_int libnvram-armx.so 之后就能看到.dynsym中的符号已经修改完毕 1 2 # arm-linux-gnueabi-objdump -T libnvram-armx.so | grep get_int 000032a4 g DF .text 0000005c nouse_get_int 参考链接 修改so导出函数名称 | k1988 https://blog.csdn.net/gxd_506/article/details/38843567">
 <title>ELF 程序魔改手段</title>
 
 <link rel='canonical' href='https://binlep.github.io/p/elf-%E7%A8%8B%E5%BA%8F%E9%AD%94%E6%94%B9%E6%89%8B%E6%AE%B5/'>
 
-<link rel="stylesheet" href="/scss/style.min.39bfc3467b36f185bf2a6a0c66cdb5ce84ca6e516254de4ea769e2350a11a136.css"><meta property='og:title' content='ELF 程序魔改手段'>
-<meta property='og:description' content='修改 .dynsym 上的符号 正常修改符号表拿 objcopy 就能解决，这里记录一下修改.dynsym段的符号方式
-有个已经写好的项目
-ELFkickers/redefine at master · k1988/ELFkickers · GitHub 这项目里的 redefine 是作者新加的文件夹，程序使用起来也很简单
-1 ./redefine -r -i -n nvram_get_int -p nouse_get_int libnvram-armx.so 之后就能看到.dynsym中的符号已经修改完毕
-1 2 # arm-linux-gnueabi-objdump -T libnvram-armx.so | grep get_int 000032a4 g DF .text 0000005c nouse_get_int 参考链接 修改so导出函数名称 | k1988
-https://blog.csdn.net/gxd_506/article/details/38843567'>
+<link rel="stylesheet" href="/scss/style.min.39bfc3467b36f185bf2a6a0c66cdb5ce84ca6e516254de4ea769e2350a11a136.css"><meta property='og:title' content="ELF 程序魔改手段">
+<meta property='og:description' content="修改 .dynsym 上的符号 正常修改符号表拿 objcopy 就能解决，这里记录一下修改.dynsym段的符号方式 有个已经写好的项目 ELFkickers/redefine at master · k1988/ELFkickers · GitHub 这项目里的 redefine 是作者新加的文件夹，程序使用起来也很简单 1 ./redefine -r -i -n nvram_get_int -p nouse_get_int libnvram-armx.so 之后就能看到.dynsym中的符号已经修改完毕 1 2 # arm-linux-gnueabi-objdump -T libnvram-armx.so | grep get_int 000032a4 g DF .text 0000005c nouse_get_int 参考链接 修改so导出函数名称 | k1988 https://blog.csdn.net/gxd_506/article/details/38843567">
 <meta property='og:url' content='https://binlep.github.io/p/elf-%E7%A8%8B%E5%BA%8F%E9%AD%94%E6%94%B9%E6%89%8B%E6%AE%B5/'>
 <meta property='og:site_name' content='binLep&#39;s Blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Blog' /><meta property='article:published_time' content='2022-09-17T10:45:00&#43;00:00'/><meta property='article:modified_time' content='2022-09-17T10:45:00&#43;00:00'/>
 <meta name="twitter:title" content="ELF 程序魔改手段">
-<meta name="twitter:description" content="修改 .dynsym 上的符号 正常修改符号表拿 objcopy 就能解决，这里记录一下修改.dynsym段的符号方式
-有个已经写好的项目
-ELFkickers/redefine at master · k1988/ELFkickers · GitHub 这项目里的 redefine 是作者新加的文件夹，程序使用起来也很简单
-1 ./redefine -r -i -n nvram_get_int -p nouse_get_int libnvram-armx.so 之后就能看到.dynsym中的符号已经修改完毕
-1 2 # arm-linux-gnueabi-objdump -T libnvram-armx.so | grep get_int 000032a4 g DF .text 0000005c nouse_get_int 参考链接 修改so导出函数名称 | k1988
-https://blog.csdn.net/gxd_506/article/details/38843567">
+<meta name="twitter:description" content="修改 .dynsym 上的符号 正常修改符号表拿 objcopy 就能解决，这里记录一下修改.dynsym段的符号方式 有个已经写好的项目 ELFkickers/redefine at master · k1988/ELFkickers · GitHub 这项目里的 redefine 是作者新加的文件夹，程序使用起来也很简单 1 ./redefine -r -i -n nvram_get_int -p nouse_get_int libnvram-armx.so 之后就能看到.dynsym中的符号已经修改完毕 1 2 # arm-linux-gnueabi-objdump -T libnvram-armx.so | grep get_int 000032a4 g DF .text 0000005c nouse_get_int 参考链接 修改so导出函数名称 | k1988 https://blog.csdn.net/gxd_506/article/details/38843567">
     <link rel="shortcut icon" href="/img/favicon.ico" />
 
     </head>
@@ -437,7 +422,7 @@ https://blog.csdn.net/gxd_506/article/details/38843567">
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.24.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.24.2">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
@@ -538,7 +523,6 @@ https://blog.csdn.net/gxd_506/article/details/38843567">
         document.head.appendChild(customFont);
     }());
 </script>
-
 
     </body>
 </html>

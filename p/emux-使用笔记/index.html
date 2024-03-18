@@ -1,36 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='准备工作 官网的安装教程很详细了，这里就不说了
-项目地址：GitHub - therealsaumil/emux 该项目的端口映射配置在run-emux-docker文件中，默认的端口映射如下
-host emux 20080 80 20443 443 28080 8080 24433 4433 9999 9999 模拟新固件 准备文件 这部分官网教程说的也差不多了
-需要注意的是，一定得把固件根目录打包成tar.bz2格式的压缩包
-1 tar -vcjf squashfs-root.tar.bz2 ./squashfs-root/ 最后文件层次结构如下
-1 2 3 4 5 6 7 8 9 10 /emux/files/emux/RT-AC68U# tree . ├── config ├── kernel │ └── zImage-2.6.39.4-vexpress -&amp;gt; ../../template/kernel/zImage-2.6.39.4-vexpress ├── mtdparts ├── nvram.ini ├── preload │ └── libnvram-armx.so └── squashfs-root.tar.bz2 再重新构建并启动即可
-1 2 ./build-emux-volume ./run-emux-docker nvram 修复 有时候，调用 nvram 的函数构成也不一样，厂家多会自己 DIY 这部分内容'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="准备工作 官网的安装教程很详细了，这里就不说了 项目地址：GitHub - therealsaumil/emux 该项目的端口映射配置在run-emux-docker文件中，默认的端口映射如下 host emux 20080 80 20443 443 28080 8080 24433 4433 9999 9999 模拟新固件 准备文件 这部分官网教程说的也差不多了 需要注意的是，一定得把固件根目录打包成tar.bz2格式的压缩包 1 tar -vcjf squashfs-root.tar.bz2 ./squashfs-root/ 最后文件层次结构如下 1 2 3 4 5 6 7 8 9 10 /emux/files/emux/RT-AC68U# tree . ├── config ├── kernel │\u00a0└── zImage-2.6.39.4-vexpress -&gt; ../../template/kernel/zImage-2.6.39.4-vexpress ├── mtdparts ├── nvram.ini ├── preload │\u00a0└── libnvram-armx.so └── squashfs-root.tar.bz2 再重新构建并启动即可 1 2 ./build-emux-volume ./run-emux-docker nvram 修复 有时候，调用 nvram 的函数构成也不一样，厂家多会自己 DIY 这部分内容">
 <title>emux 使用笔记</title>
 
 <link rel='canonical' href='https://binlep.github.io/p/emux-%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/'>
 
-<link rel="stylesheet" href="/scss/style.min.39bfc3467b36f185bf2a6a0c66cdb5ce84ca6e516254de4ea769e2350a11a136.css"><meta property='og:title' content='emux 使用笔记'>
-<meta property='og:description' content='准备工作 官网的安装教程很详细了，这里就不说了
-项目地址：GitHub - therealsaumil/emux 该项目的端口映射配置在run-emux-docker文件中，默认的端口映射如下
-host emux 20080 80 20443 443 28080 8080 24433 4433 9999 9999 模拟新固件 准备文件 这部分官网教程说的也差不多了
-需要注意的是，一定得把固件根目录打包成tar.bz2格式的压缩包
-1 tar -vcjf squashfs-root.tar.bz2 ./squashfs-root/ 最后文件层次结构如下
-1 2 3 4 5 6 7 8 9 10 /emux/files/emux/RT-AC68U# tree . ├── config ├── kernel │ └── zImage-2.6.39.4-vexpress -&amp;gt; ../../template/kernel/zImage-2.6.39.4-vexpress ├── mtdparts ├── nvram.ini ├── preload │ └── libnvram-armx.so └── squashfs-root.tar.bz2 再重新构建并启动即可
-1 2 ./build-emux-volume ./run-emux-docker nvram 修复 有时候，调用 nvram 的函数构成也不一样，厂家多会自己 DIY 这部分内容'>
+<link rel="stylesheet" href="/scss/style.min.39bfc3467b36f185bf2a6a0c66cdb5ce84ca6e516254de4ea769e2350a11a136.css"><meta property='og:title' content="emux 使用笔记">
+<meta property='og:description' content="准备工作 官网的安装教程很详细了，这里就不说了 项目地址：GitHub - therealsaumil/emux 该项目的端口映射配置在run-emux-docker文件中，默认的端口映射如下 host emux 20080 80 20443 443 28080 8080 24433 4433 9999 9999 模拟新固件 准备文件 这部分官网教程说的也差不多了 需要注意的是，一定得把固件根目录打包成tar.bz2格式的压缩包 1 tar -vcjf squashfs-root.tar.bz2 ./squashfs-root/ 最后文件层次结构如下 1 2 3 4 5 6 7 8 9 10 /emux/files/emux/RT-AC68U# tree . ├── config ├── kernel │\u00a0└── zImage-2.6.39.4-vexpress -&gt; ../../template/kernel/zImage-2.6.39.4-vexpress ├── mtdparts ├── nvram.ini ├── preload │\u00a0└── libnvram-armx.so └── squashfs-root.tar.bz2 再重新构建并启动即可 1 2 ./build-emux-volume ./run-emux-docker nvram 修复 有时候，调用 nvram 的函数构成也不一样，厂家多会自己 DIY 这部分内容">
 <meta property='og:url' content='https://binlep.github.io/p/emux-%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/'>
 <meta property='og:site_name' content='binLep&#39;s Blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Blog' /><meta property='article:published_time' content='2022-09-16T17:58:30&#43;00:00'/><meta property='article:modified_time' content='2022-09-16T17:58:30&#43;00:00'/>
 <meta name="twitter:title" content="emux 使用笔记">
-<meta name="twitter:description" content="准备工作 官网的安装教程很详细了，这里就不说了
-项目地址：GitHub - therealsaumil/emux 该项目的端口映射配置在run-emux-docker文件中，默认的端口映射如下
-host emux 20080 80 20443 443 28080 8080 24433 4433 9999 9999 模拟新固件 准备文件 这部分官网教程说的也差不多了
-需要注意的是，一定得把固件根目录打包成tar.bz2格式的压缩包
-1 tar -vcjf squashfs-root.tar.bz2 ./squashfs-root/ 最后文件层次结构如下
-1 2 3 4 5 6 7 8 9 10 /emux/files/emux/RT-AC68U# tree . ├── config ├── kernel │ └── zImage-2.6.39.4-vexpress -&amp;gt; ../../template/kernel/zImage-2.6.39.4-vexpress ├── mtdparts ├── nvram.ini ├── preload │ └── libnvram-armx.so └── squashfs-root.tar.bz2 再重新构建并启动即可
-1 2 ./build-emux-volume ./run-emux-docker nvram 修复 有时候，调用 nvram 的函数构成也不一样，厂家多会自己 DIY 这部分内容">
+<meta name="twitter:description" content="准备工作 官网的安装教程很详细了，这里就不说了 项目地址：GitHub - therealsaumil/emux 该项目的端口映射配置在run-emux-docker文件中，默认的端口映射如下 host emux 20080 80 20443 443 28080 8080 24433 4433 9999 9999 模拟新固件 准备文件 这部分官网教程说的也差不多了 需要注意的是，一定得把固件根目录打包成tar.bz2格式的压缩包 1 tar -vcjf squashfs-root.tar.bz2 ./squashfs-root/ 最后文件层次结构如下 1 2 3 4 5 6 7 8 9 10 /emux/files/emux/RT-AC68U# tree . ├── config ├── kernel │\u00a0└── zImage-2.6.39.4-vexpress -&gt; ../../template/kernel/zImage-2.6.39.4-vexpress ├── mtdparts ├── nvram.ini ├── preload │\u00a0└── libnvram-armx.so └── squashfs-root.tar.bz2 再重新构建并启动即可 1 2 ./build-emux-volume ./run-emux-docker nvram 修复 有时候，调用 nvram 的函数构成也不一样，厂家多会自己 DIY 这部分内容">
     <link rel="shortcut icon" href="/img/favicon.ico" />
 
     </head>
@@ -587,7 +569,7 @@ host emux 20080 80 20443 443 28080 8080 24433 4433 9999 9999 模拟新固件 准
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.24.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.24.2">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
@@ -688,7 +670,6 @@ host emux 20080 80 20443 443 28080 8080 24433 4433 9999 9999 模拟新固件 准
         document.head.appendChild(customFont);
     }());
 </script>
-
 
     </body>
 </html>
